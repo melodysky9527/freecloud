@@ -94,6 +94,7 @@ def login_session() -> Optional[cloudscraper.CloudScraper]:
         if "退出登录" not in resp.text and "member/index" not in resp.text:
             logging.error("❌ 登录失败，请检查用户名或密码是否正确。")
             send_telegram_message("❌ 登录失败，请检查 FreeCloud 用户名或密码是否正确。")
+            exit(1)
             return None
 
         scraper.get(CONSOLE_URL)
@@ -127,8 +128,10 @@ def renew_server(session: cloudscraper.CloudScraper) -> None:
                 logging.info(f"✅ 续费状态：{message}")
                 send_telegram_message(f"✅ 续费状态：{message}")
              else:
-                logging.info(f"{message}")
+                logging.error("请检查FC_MACHINE_ID是否输入正确")
+                logging.error(f"{message}")
                 send_telegram_message(f"{message}")
+                exit(1)
         except Exception:
             logging.warning("⚠️ 返回内容不是 JSON，原始响应如下：")
             logging.warning(response.text)
